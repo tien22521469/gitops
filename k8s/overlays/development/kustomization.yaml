@@ -6,10 +6,23 @@ namespace: emartapp
 resources:
   - ../../base
 
-patchesStrategicMerge:
-  - replicas-patch.yaml
-  - resource-patch.yaml
-  - labels-patch.yaml
+patches:
+  - target:
+      kind: Deployment
+      name: backend
+    patch: |-
+      - op: add
+        path: /spec/template/metadata/labels/environment
+        value: development
+  - target:
+      kind: Deployment
+      name: frontend
+    patch: |-
+      - op: add
+        path: /spec/template/metadata/labels/environment
+        value: development
+  - path: replicas-patch.yaml
+  - path: resource-patch.yaml
 
 images:
   - name: javaapi
