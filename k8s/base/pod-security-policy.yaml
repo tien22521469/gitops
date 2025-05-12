@@ -1,0 +1,53 @@
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: emartapp-psp
+spec:
+  privileged: false
+  seLinux:
+    rule: RunAsAny
+  runAsUser:
+    rule: MustRunAsNonRoot
+    ranges:
+    - min: 1000
+      max: 65535
+  fsGroup:
+    rule: MustRunAs
+    ranges:
+    - min: 1000
+      max: 65535
+  volumes:
+  - 'configMap'
+  - 'emptyDir'
+  - 'projected'
+  - 'secret'
+  - 'downwardAPI'
+  - 'persistentVolumeClaim'
+  allowPrivilegeEscalation: false
+  hostNetwork: false
+  hostIPC: false
+  hostPID: false
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: emartapp-psp
+rules:
+- apiGroups: ['policy']
+  resources: ['podsecuritypolicies']
+  verbs: ['use']
+  resourceNames: ['emartapp-psp']
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: emartapp-psp
+  namespace: emartapp
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: emartapp-psp
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: emartapp 

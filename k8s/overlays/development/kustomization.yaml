@@ -1,0 +1,22 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: emartapp
+
+resources:
+  - ../../base
+
+patches:
+  - path: replicas-patch.yaml
+  - path: resource-patch.yaml
+
+commonLabels:
+  environment: development
+
+images:
+  - name: javaapi
+    newTag: latest
+  - name: nodeapi
+    newTag: latest
+  - name: frontend
+    newTag: latest 

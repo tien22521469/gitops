@@ -1,0 +1,107 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: javaapi
+  labels:
+    app: javaapi
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: javaapi
+  template:
+    metadata:
+      labels:
+        app: javaapi
+    spec:
+      containers:
+      - name: javaapi
+        image: javaapi
+        ports:
+        - containerPort: 8080
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: "prod"
+        - name: DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: database-config
+              key: host
+        - name: DB_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: database-config
+              key: port
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        readinessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 60
+          periodSeconds: 15
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nodeapi
+  labels:
+    app: nodeapi
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nodeapi
+  template:
+    metadata:
+      labels:
+        app: nodeapi
+    spec:
+      containers:
+      - name: nodeapi
+        image: nodeapi
+        ports:
+        - containerPort: 3000
+        env:
+        - name: NODE_ENV
+          value: "production"
+        - name: DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: database-config
+              key: host
+        - name: DB_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: database-config
+              key: port
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 60
+          periodSeconds: 15 
