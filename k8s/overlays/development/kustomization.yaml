@@ -10,8 +10,8 @@ patches:
   - path: replicas-patch.yaml
   - path: resource-patch.yaml
 
-Labels:
-    environment: development
+commonLabels:
+  environment: development
 
 images:
   - name: javaapi
