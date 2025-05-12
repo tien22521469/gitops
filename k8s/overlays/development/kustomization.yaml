@@ -9,9 +9,7 @@ resources:
 patches:
   - path: replicas-patch.yaml
   - path: resource-patch.yaml
-
-commonLabels:
-  environment: development
+  - path: labels-patch.yaml
 
 images:
   - name: javaapi
