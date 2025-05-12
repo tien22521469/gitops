@@ -12,7 +12,7 @@ resources:
   - network-policy.yaml
   - pod-security-policy.yaml
 
-labels:
+commonLabels:
   app.kubernetes.io/part-of: emartapp
   app.kubernetes.io/managed-by: kustomize
 
@@ -25,4 +25,4 @@ images:
     newTag: ${BUILD_NUMBER}
   - name: frontend
     newName: ${DOCKER_REGISTRY}/emartapp-frontend
-    newTag: ${BUILD_NUMBER} 
+    newTag: ${BUILD_NUMBER}
