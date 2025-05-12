@@ -11,8 +11,7 @@ patches:
   - path: resource-patch.yaml
 
 labels:
-  - pairs:
-      environment: development
+    environment: development
 
 images:
   - name: javaapi
