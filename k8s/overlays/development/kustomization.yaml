@@ -6,10 +6,10 @@ namespace: emartapp
 resources:
   - ../../base
 
-patches:
-  - path: replicas-patch.yaml
-  - path: resource-patch.yaml
-  - path: labels-patch.yaml
+patchesStrategicMerge:
+  - replicas-patch.yaml
+  - resource-patch.yaml
+  - labels-patch.yaml
 
 images:
   - name: javaapi
