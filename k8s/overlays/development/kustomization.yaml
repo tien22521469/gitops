@@ -10,7 +10,7 @@ patches:
   - path: replicas-patch.yaml
   - path: resource-patch.yaml
 
-labels:
+commonLabels:
     environment: development
 
 images:
