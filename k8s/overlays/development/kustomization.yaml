@@ -26,8 +26,11 @@ patches:
 
 images:
   - name: javaapi
+    newName: nguyentienuit/emartapp-javaapi
     newTag: latest
   - name: nodeapi
+    newName: nguyentienuit/emartapp-nodeapi
     newTag: latest
   - name: frontend
-    newTag: latest 
+    newName: nguyentienuit/emartapp-frontend
+    newTag: latest
