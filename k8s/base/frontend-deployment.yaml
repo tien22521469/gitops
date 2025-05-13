@@ -56,8 +56,12 @@ spec:
           mountPath: /tmp
         - name: cache
           mountPath: /var/cache/nginx
+        - name: run               # ✅ Bắt buộc phải mount /run
+          mountPath: /run
       volumes:
       - name: tmp
         emptyDir: {}
       - name: cache
-        emptyDir: {} 
+        emptyDir: {}
+      - name: run                # ✅ Tạo volume cho /run
+        emptyDir: {}
