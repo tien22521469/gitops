@@ -10,7 +10,7 @@ resources:
   - frontend-deployment.yaml
   - service.yaml
   - network-policy.yaml
-  - pod-security-policy.yaml
+
 
 commonLabels:
   app.kubernetes.io/part-of: emartapp
