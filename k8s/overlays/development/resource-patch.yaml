@@ -1,24 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: backend
-  namespace: emartapp
-spec:
-  template:
-    spec:
-      containers:
-      - name: backend
-        resources:
-          requests:
-            memory: "128Mi"
-            cpu: "100m"
-          limits:
-            memory: "256Mi"
-            cpu: "200m"
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
   name: frontend
   namespace: emartapp
 spec:
