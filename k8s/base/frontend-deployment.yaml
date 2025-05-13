@@ -20,7 +20,7 @@ spec:
         fsGroup: 1000
       containers:
       - name: frontend
-        image: nguyentienuit/emartapp-frontend:latest
+        image: nguyentienuit/emartapp-frontend:40
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
