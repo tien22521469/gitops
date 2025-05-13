@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: javaapi
-        image: javaapi
+        image: ${DOCKER_REGISTRY}/emartapp-javaapi:${BUILD_NUMBER}
         ports:
         - containerPort: 8080
         env:
@@ -72,7 +72,7 @@ spec:
     spec:
       containers:
       - name: nodeapi
-        image: nodeapi
+        image: ${DOCKER_REGISTRY}/emartapp-nodeapi:${BUILD_NUMBER}
         ports:
         - containerPort: 3000
         env:
