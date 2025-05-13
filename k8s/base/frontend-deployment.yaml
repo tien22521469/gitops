@@ -20,7 +20,7 @@ spec:
         fsGroup: 1000
       containers:
       - name: frontend
-        image: nguyentienuit/emartapp-frontend:40
+        image: nguyentienuit/emartapp-frontend:latest
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
@@ -54,6 +54,10 @@ spec:
         volumeMounts:
         - name: tmp
           mountPath: /tmp
+        - name: cache
+          mountPath: /var/cache/nginx
       volumes:
       - name: tmp
+        emptyDir: {}
+      - name: cache
         emptyDir: {} 
