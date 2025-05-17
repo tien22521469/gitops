@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: database-config  # Đổi tên từ postgres-config thành database-config
+  name: postgres-config
   namespace: emartapp
 data:
   host: postgres
@@ -16,4 +16,4 @@ metadata:
 type: Opaque
 data:
   POSTGRES_USER: cG9zdGdyZXM=  # postgres
-  POSTGRES_PASSWORD: cG9zdGdyZXM=  # postgres 
+  POSTGRES_PASSWORD: cG9zdGdyZXM=  # postgres
