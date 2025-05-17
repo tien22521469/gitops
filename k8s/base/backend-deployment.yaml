@@ -26,13 +26,18 @@ spec:
         - name: DB_HOST
           valueFrom:
             configMapKeyRef:
-              name: postgres-config  # Sửa từ database-config thành postgres-config
-              key: POSTGRES_DB
+              name: database-config
+              key: host
         - name: DB_PORT
           valueFrom:
             configMapKeyRef:
-              name: postgres-config  # Sửa từ database-config thành postgres-config
+              name: database-config
               key: port
+        - name: DB_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: database-config
+              key: POSTGRES_DB
         resources:
           requests:
             memory: "256Mi"
@@ -81,13 +86,18 @@ spec:
         - name: DB_HOST
           valueFrom:
             configMapKeyRef:
-              name: postgres-config  # Sửa từ database-config thành postgres-config
-              key: POSTGRES_DB
+              name: database-config
+              key: host
         - name: DB_PORT
           valueFrom:
             configMapKeyRef:
-              name: postgres-config  # Sửa từ database-config thành postgres-config
+              name: database-config
               key: port
+        - name: DB_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: database-config
+              key: POSTGRES_DB
         resources:
           requests:
             memory: "256Mi"
