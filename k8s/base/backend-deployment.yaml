@@ -79,28 +79,7 @@ spec:
           limits:
             memory: "512Mi"
             cpu: "500m"
-        startupProbe:
-          httpGet:
-            path: /actuator/health
-            port: 8080
-          initialDelaySeconds: 30
-          periodSeconds: 10
-          failureThreshold: 30
-          timeoutSeconds: 5
-        readinessProbe:
-          httpGet:
-            path: /actuator/health
-            port: 8080
-          initialDelaySeconds: 60
-          periodSeconds: 15
-          failureThreshold: 5
-        livenessProbe:
-          httpGet:
-            path: /actuator/health
-            port: 8080
-          initialDelaySeconds: 90
-          periodSeconds: 20
-          failureThreshold: 5
+
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -124,7 +103,7 @@ spec:
         image: nguyentienuit/emartapp-nodeapi:40
         command: ["node", "server"]
         ports:
-        - containerPort: 3000
+        - containerPort: 5000
         env:
         - name: NODE_ENV
           value: "production"
@@ -162,25 +141,4 @@ spec:
           limits:
             memory: "512Mi"
             cpu: "500m"
-        startupProbe:
-          httpGet:
-            path: /health
-            port: 3000
-          initialDelaySeconds: 30
-          periodSeconds: 10
-          failureThreshold: 30
-          timeoutSeconds: 5
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 3000
-          initialDelaySeconds: 60
-          periodSeconds: 15
-          failureThreshold: 5
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 3000
-          initialDelaySeconds: 90
-          periodSeconds: 20
-          failureThreshold: 5
+
