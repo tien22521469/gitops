@@ -21,6 +21,7 @@ spec:
       containers:
       - name: frontend
         image: nguyentienuit/emartapp-frontend:40
+        command: ["nginx", "-g", "daemon off;"]  # Đảm bảo nginx chạy ở foreground
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
@@ -43,15 +44,15 @@ spec:
           httpGet:
             path: /
             port: 80
-          initialDelaySeconds: 60  # Tăng thời gian chờ
-          periodSeconds: 15
-          failureThreshold: 3
+          initialDelaySeconds: 90  # Tăng thời gian chờ
+          periodSeconds: 20
+          failureThreshold: 5
         readinessProbe:
           httpGet:
             path: /
             port: 80
-          initialDelaySeconds: 30  # Tăng thời gian chờ
-          periodSeconds: 10
+          initialDelaySeconds: 45  # Tăng thời gian chờ
+          periodSeconds: 15
         volumeMounts:
         - name: tmp
           mountPath: /tmp
@@ -65,4 +66,4 @@ spec:
       - name: cache
         emptyDir: {}
       - name: nginx-run
-        emptyDir: {} 
+        emptyDir: {}
