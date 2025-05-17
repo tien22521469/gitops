@@ -21,7 +21,7 @@ spec:
       containers:
       - name: frontend
         image: nguyentienuit/emartapp-frontend:40
-        command: ["nginx", "-g", "daemon off;"]  # Đảm bảo nginx chạy ở foreground
+        command: ["nginx", "-c", "/etc/nginx/custom/nginx.conf", "-g", "daemon off;"]  # Use custom nginx.conf
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
@@ -60,6 +60,8 @@ spec:
           mountPath: /var/cache/nginx
         - name: nginx-run
           mountPath: /var/run
+        - name: nginx-config
+          mountPath: /etc/nginx/custom
       volumes:
       - name: tmp
         emptyDir: {}
@@ -67,3 +69,6 @@ spec:
         emptyDir: {}
       - name: nginx-run
         emptyDir: {}
+      - name: nginx-config
+        configMap:
+          name: nginx-config
