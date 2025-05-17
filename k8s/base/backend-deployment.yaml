@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: javaapi
-        image: nguyentienuit/emartapp-javaapi:latest
+        image: nguyentienuit/emartapp-javaapi:40
         ports:
         - containerPort: 8080
         env:
@@ -72,7 +72,7 @@ spec:
     spec:
       containers:
       - name: nodeapi
-        image: nguyentienuit/emartapp-nodeapi:latest
+        image: nguyentienuit/emartapp-nodeapi:40
         ports:
         - containerPort: 3000
         env:
