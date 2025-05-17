@@ -21,7 +21,7 @@ spec:
       containers:
       - name: frontend
         image: nguyentienuit/emartapp-frontend:40
-        command: ["nginx", "-c", "/etc/nginx/custom/nginx.conf", "-g", "daemon off;"]  # Use custom nginx.conf
+        command: ["nginx", "-g", "daemon off;"]  # Simplified command
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
@@ -40,19 +40,7 @@ spec:
           limits:
             memory: "256Mi"
             cpu: "200m"
-        livenessProbe:
-          httpGet:
-            path: /
-            port: 80
-          initialDelaySeconds: 90  # Tăng thời gian chờ
-          periodSeconds: 20
-          failureThreshold: 5
-        readinessProbe:
-          httpGet:
-            path: /
-            port: 80
-          initialDelaySeconds: 45  # Tăng thời gian chờ
-          periodSeconds: 15
+
         volumeMounts:
         - name: tmp
           mountPath: /tmp
@@ -72,3 +60,4 @@ spec:
       - name: nginx-config
         configMap:
           name: nginx-config
+
