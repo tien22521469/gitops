@@ -10,6 +10,7 @@ resources:
   - frontend-deployment.yaml
   - service.yaml
   - network-policy.yaml
+  - nginx-config.yaml
 
 
 commonLabels:
