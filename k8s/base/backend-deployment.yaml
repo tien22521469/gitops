@@ -18,6 +18,7 @@ spec:
       containers:
       - name: javaapi
         image: nguyentienuit/emartapp-javaapi:40
+        command: ["sleep", "infinity"]
         ports:
         - containerPort: 8080
         env:
@@ -101,7 +102,7 @@ spec:
       containers:
       - name: nodeapi
         image: nguyentienuit/emartapp-nodeapi:40
-        command: ["node", "server"]
+        command: ["sleep", "infinity"]
         ports:
         - containerPort: 5000
         env:
