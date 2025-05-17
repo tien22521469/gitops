@@ -1,9 +1,11 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: postgres-config
+  name: database-config  # Đổi tên từ postgres-config thành database-config
   namespace: emartapp
 data:
+  host: postgres
+  port: "5432"
   POSTGRES_DB: emart
 ---
 apiVersion: v1
