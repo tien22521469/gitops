@@ -15,9 +15,9 @@ spec:
     spec:
       securityContext:
         runAsNonRoot: true
-        runAsUser: 1000
-        runAsGroup: 1000
-        fsGroup: 1000
+        runAsUser: 101  # nginx user id
+        runAsGroup: 101  # nginx group id
+        fsGroup: 101
       containers:
       - name: frontend
         image: nguyentienuit/emartapp-frontend:40
@@ -26,7 +26,7 @@ spec:
           capabilities:
             drop:
             - ALL
-          readOnlyRootFilesystem: true
+          readOnlyRootFilesystem: false  # Cho phép ghi vào filesystem
         ports:
         - containerPort: 80
         env:
@@ -43,21 +43,26 @@ spec:
           httpGet:
             path: /
             port: 80
-          initialDelaySeconds: 30
-          periodSeconds: 10
+          initialDelaySeconds: 60  # Tăng thời gian chờ
+          periodSeconds: 15
+          failureThreshold: 3
         readinessProbe:
           httpGet:
             path: /
             port: 80
-          initialDelaySeconds: 15
-          periodSeconds: 5
+          initialDelaySeconds: 30  # Tăng thời gian chờ
+          periodSeconds: 10
         volumeMounts:
         - name: tmp
           mountPath: /tmp
         - name: cache
           mountPath: /var/cache/nginx
+        - name: nginx-run
+          mountPath: /var/run
       volumes:
       - name: tmp
         emptyDir: {}
       - name: cache
+        emptyDir: {}
+      - name: nginx-run
         emptyDir: {} 
