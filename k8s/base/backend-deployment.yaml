@@ -78,6 +78,7 @@ spec:
       containers:
       - name: nodeapi
         image: nguyentienuit/emartapp-nodeapi:40
+        command: ["node", "server.js"]
         ports:
         - containerPort: 3000
         env:
@@ -98,6 +99,16 @@ spec:
             configMapKeyRef:
               name: database-config
               key: POSTGRES_DB
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: POSTGRES_USER
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: POSTGRES_PASSWORD
         resources:
           requests:
             memory: "256Mi"
