@@ -78,12 +78,14 @@ spec:
       containers:
       - name: nodeapi
         image: nguyentienuit/emartapp-nodeapi:40
-        command: ["node", "server.js"]
+        command: ["node", "server"]
         ports:
         - containerPort: 3000
         env:
         - name: NODE_ENV
           value: "production"
+        - name: MONGO_URI
+          value: "mongodb://mongodb:27017/emart"
         - name: DB_HOST
           valueFrom:
             configMapKeyRef:
