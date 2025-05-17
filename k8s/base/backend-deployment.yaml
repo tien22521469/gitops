@@ -38,6 +38,22 @@ spec:
             configMapKeyRef:
               name: database-config
               key: POSTGRES_DB
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: POSTGRES_USER
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: POSTGRES_PASSWORD
+        - name: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
+          value: "5"
+        - name: SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE
+          value: "1"
+        - name: SPRING_DATASOURCE_HIKARI_CONNECTION_TIMEOUT
+          value: "20000"
         resources:
           requests:
             memory: "256Mi"
@@ -45,18 +61,28 @@ spec:
           limits:
             memory: "512Mi"
             cpu: "500m"
-        readinessProbe:
+        startupProbe:
           httpGet:
             path: /actuator/health
             port: 8080
           initialDelaySeconds: 30
           periodSeconds: 10
-        livenessProbe:
+          failureThreshold: 30
+          timeoutSeconds: 5
+        readinessProbe:
           httpGet:
             path: /actuator/health
             port: 8080
           initialDelaySeconds: 60
           periodSeconds: 15
+          failureThreshold: 5
+        livenessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 90
+          periodSeconds: 20
+          failureThreshold: 5
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -118,15 +144,25 @@ spec:
           limits:
             memory: "512Mi"
             cpu: "500m"
-        readinessProbe:
+        startupProbe:
           httpGet:
             path: /health
             port: 3000
           initialDelaySeconds: 30
           periodSeconds: 10
-        livenessProbe:
+          failureThreshold: 30
+          timeoutSeconds: 5
+        readinessProbe:
           httpGet:
             path: /health
             port: 3000
           initialDelaySeconds: 60
-          periodSeconds: 15 
+          periodSeconds: 15
+          failureThreshold: 5
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 90
+          periodSeconds: 20
+          failureThreshold: 5
