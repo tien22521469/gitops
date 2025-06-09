@@ -20,7 +20,7 @@ spec:
         fsGroup: 101
       containers:
       - name: frontend
-        image: nguyentienuit/emartapp-frontend:40
+        image: nguyentienuit/emartapp-frontend:
         command: ["nginx", "-g", "daemon off;"]  # Simplified command
         securityContext:
           allowPrivilegeEscalation: false
