@@ -51,14 +51,6 @@
 
                                 # Update kubeconfig
                                 aws eks update-kubeconfig --name ${EKS_CLUSTER_NAME} --region ${AWS_REGION}
-
-                                # Wait for ArgoCD application to be healthy
-                                kubectl wait --for=condition=healthy --timeout=300s application/emartapp -n ${ARGOCD_NAMESPACE}
-
-                                # Wait for all pods to be ready
-                                kubectl wait --for=condition=ready --timeout=300s pod -l app=javaapi -n emartapp
-                                kubectl wait --for=condition=ready --timeout=300s pod -l app=nodeapi -n emartapp
-                                kubectl wait --for=condition=ready --timeout=300s pod -l app=frontend -n emartapp
                             """
                         }
                     }
