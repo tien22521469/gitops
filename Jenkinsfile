@@ -49,15 +49,13 @@ pipeline {
                             # Verify AWS credentials
                             aws sts get-caller-identity
 
-                            # Install aws-iam-authenticator if not present
-                            if ! command -v aws-iam-authenticator &> /dev/null; then
-                                curl -o aws-iam-authenticator https://amazon-eks.s3.us-west-2.amazonaws.com/1.21.2/2021-07-05/bin/linux/amd64/aws-iam-authenticator
-                                chmod +x aws-iam-authenticator
-                                sudo mv aws-iam-authenticator /usr/local/bin/
-                            fi
+                            # Install aws-iam-authenticator locally
+                            curl -o aws-iam-authenticator https://amazon-eks.s3.us-west-2.amazonaws.com/1.21.2/2021-07-05/bin/linux/amd64/aws-iam-authenticator
+                            chmod +x aws-iam-authenticator
+                            export PATH=\$PATH:\$(pwd)
 
                             # Update kubeconfig with proper authentication
-                            aws eks update-kubeconfig --name ${EKS_CLUSTER_NAME} --region ${AWS_REGION} --role-arn arn:aws:iam::449663538285:role/eks-admin-role
+                            aws eks update-kubeconfig --name ${EKS_CLUSTER_NAME} --region ${AWS_REGION}
 
                             # Verify cluster access
                             kubectl cluster-info
