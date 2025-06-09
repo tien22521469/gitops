@@ -46,11 +46,14 @@
                             ]
                         ]) {
                             sh """
+                                # Xóa file credentials nếu tồn tại
+                                rm -f ~/.aws/credentials
+
                                 # Kiểm tra AWS credentials
-                                aws sts get-caller-identity
+                                AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} aws sts get-caller-identity
 
                                 # Cập nhật kubeconfig
-                                aws eks update-kubeconfig --name ${EKS_CLUSTER_NAME} --region ${AWS_REGION}
+                                AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} aws eks update-kubeconfig --name ${EKS_CLUSTER_NAME} --region ${AWS_REGION}
 
                                 # Kiểm tra kết nối cluster
                                 kubectl get nodes
@@ -80,8 +83,11 @@
                             ]
                         ]) {
                             sh """
+                                # Xóa file credentials nếu tồn tại
+                                rm -f ~/.aws/credentials
+
                                 # Cập nhật kubeconfig
-                                aws eks update-kubeconfig --name ${EKS_CLUSTER_NAME} --region ${AWS_REGION}
+                                AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} aws eks update-kubeconfig --name ${EKS_CLUSTER_NAME} --region ${AWS_REGION}
 
                                 # Kiểm tra deployments
                                 kubectl rollout status deployment/javaapi -n emartapp
