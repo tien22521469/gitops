@@ -51,39 +51,39 @@ pipeline {
             }
         }
         
-        stage('Update Deployment Images') {
-            steps {
-                sh '''
-                    # Cập nhật image cho frontend
-                    sed -i "s|nguyentienuit/emartapp-frontend:[0-9A-Za-z._-]*|nguyentienuit/emartapp-frontend:${IMAGE_TAG}|g" k8s/base/frontend-deployment.yaml
+//         stage('Update Deployment Images') {
+//             steps {
+//                 sh '''
+//                     # Cập nhật image cho frontend
+//                     sed -i "s|nguyentienuit/emartapp-frontend:[0-9A-Za-z._-]*|nguyentienuit/emartapp-frontend:${IMAGE_TAG}|g" k8s/base/frontend-deployment.yaml
 
-                    # Cập nhật image cho javaapi
-                    sed -i "s|nguyentienuit/emartapp-javaapi:[0-9A-Za-z._-]*|nguyentienuit/emartapp-javaapi:${IMAGE_TAG}|g" k8s/base/backend-deployment.yaml
+//                     # Cập nhật image cho javaapi
+//                     sed -i "s|nguyentienuit/emartapp-javaapi:[0-9A-Za-z._-]*|nguyentienuit/emartapp-javaapi:${IMAGE_TAG}|g" k8s/base/backend-deployment.yaml
 
-                    # Cập nhật image cho nodeapi
-                    sed -i "s|nguyentienuit/emartapp-nodeapi:[0-9A-Za-z._-]*|nguyentienuit/emartapp-nodeapi:${IMAGE_TAG}|g" k8s/base/backend-deployment.yaml
+//                     # Cập nhật image cho nodeapi
+//                     sed -i "s|nguyentienuit/emartapp-nodeapi:[0-9A-Za-z._-]*|nguyentienuit/emartapp-nodeapi:${IMAGE_TAG}|g" k8s/base/backend-deployment.yaml
 
                  
-                    # Kiểm tra lại kết quả
-                    cat k8s/base/frontend-deployment.yaml
-                    cat k8s/base/backend-deployment.yaml
-                    cat k8s/base/database-deployment.yaml
-                '''
-            }
-        }
-        stage("Push the changed deployment file to GitHub") {
-    steps {
-        sh """
-            git config --global user.name "jenkins"
-            git config --global user.email "22521469@gm.uit.edu.vn"
-            git add k8s/base/*.yaml
-            git commit -m "Updated Deployment Manifest - Image Tag ${IMAGE_TAG} (Build ${BUILD_NUMBER})" || echo "No changes to commit"
-        """
-        withCredentials([gitUsernamePassword(credentialsId: 'github', gitToolName: 'Default')]) {
-            sh "git push https://github.com/${GIT_REPO}.git main"
-        }
-    }
-}
+//                     # Kiểm tra lại kết quả
+//                     cat k8s/base/frontend-deployment.yaml
+//                     cat k8s/base/backend-deployment.yaml
+//                     cat k8s/base/database-deployment.yaml
+//                 '''
+//             }
+//         }
+//         stage("Push the changed deployment file to GitHub") {
+//     steps {
+//         sh """
+//             git config --global user.name "jenkins"
+//             git config --global user.email "22521469@gm.uit.edu.vn"
+//             git add k8s/base/*.yaml
+//             git commit -m "Updated Deployment Manifest - Image Tag ${IMAGE_TAG} (Build ${BUILD_NUMBER})" || echo "No changes to commit"
+//         """
+//         withCredentials([gitUsernamePassword(credentialsId: 'github', gitToolName: 'Default')]) {
+//             sh "git push https://github.com/${GIT_REPO}.git main"
+//         }
+//     }
+// }
 
         stage('Verify Deployment') {
             steps {
