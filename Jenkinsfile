@@ -26,6 +26,9 @@ pipeline {
             steps {
                 script {
                     sh """
+                    # Install kustomize
+                        curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash
+                        sudo mv kustomize /usr/local/bin/
                         cd k8s/overlays/development
                         kustomize build .
                     """
