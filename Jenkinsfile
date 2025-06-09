@@ -37,7 +37,7 @@ pipeline {
         stage('Wait for ArgoCD Sync') {
             steps {
                 script {
-                    withAWS(credentials: 'aws-credentials', region: env.AWS_REGION) {
+                    withCredentials(credentials: 'aws-credentials', region: env.AWS_REGION) {
                         sh """
                             aws eks update-kubeconfig --name ${EKS_CLUSTER_NAME} --region ${AWS_REGION}
                             
