@@ -87,32 +87,32 @@ pipeline {
         success {
             emailext (
                 subject: "CD Pipeline Successful: ${currentBuild.fullDisplayName}",
-                body: """
+                body: """\
                     Your CD pipeline has completed successfully.
                     Build Number: ${BUILD_NUMBER}
-                    Check console output at ${env.BUILD_URL}
+                    Check console output at \${env.BUILD_URL}
                     
                     Deployment Status:
-                    - JavaAPI: $(kubectl get deployment javaapi -n emartapp -o jsonpath='{.status.availableReplicas}')/$(kubectl get deployment javaapi -n emartapp -o jsonpath='{.status.replicas}')
-                    - NodeAPI: $(kubectl get deployment nodeapi -n emartapp -o jsonpath='{.status.availableReplicas}')/$(kubectl get deployment nodeapi -n emartapp -o jsonpath='{.status.replicas}')
-                    - Frontend: $(kubectl get deployment frontend -n emartapp -o jsonpath='{.status.availableReplicas}')/$(kubectl get deployment frontend -n emartapp -o jsonpath='{.status.replicas}')
-                """,
+                    - JavaAPI: \$(kubectl get deployment javaapi -n emartapp -o jsonpath='{.status.availableReplicas}')/\$(kubectl get deployment javaapi -n emartapp -o jsonpath='{.status.replicas}')
+                    - NodeAPI: \$(kubectl get deployment nodeapi -n emartapp -o jsonpath='{.status.availableReplicas}')/\$(kubectl get deployment nodeapi -n emartapp -o jsonpath='{.status.replicas}')
+                    - Frontend: \$(kubectl get deployment frontend -n emartapp -o jsonpath='{.status.availableReplicas}')/\$(kubectl get deployment frontend -n emartapp -o jsonpath='{.status.replicas}')
+                """.stripIndent(),
                 to: '${DEFAULT_RECIPIENTS}'
             )
         }
         failure {
             emailext (
                 subject: "CD Pipeline Failed: ${currentBuild.fullDisplayName}",
-                body: """
+                body: """\
                     Your CD pipeline has failed.
                     Build Number: ${BUILD_NUMBER}
-                    Check console output at ${env.BUILD_URL}
+                    Check console output at \${env.BUILD_URL}
                     
                     Last 10 lines of logs:
-                    $(kubectl logs -n emartapp -l app=javaapi --tail=10)
-                    $(kubectl logs -n emartapp -l app=nodeapi --tail=10)
-                    $(kubectl logs -n emartapp -l app=frontend --tail=10)
-                """,
+                    \$(kubectl logs -n emartapp -l app=javaapi --tail=10)
+                    \$(kubectl logs -n emartapp -l app=nodeapi --tail=10)
+                    \$(kubectl logs -n emartapp -l app=frontend --tail=10)
+                """.stripIndent(),
                 to: '${DEFAULT_RECIPIENTS}'
             )
         }
