@@ -51,6 +51,29 @@
                 }
             }
             
+            ('Update Deployment Images') {
+                steps {
+                    sh '''
+                        # Cập nhật image cho frontend
+                        sed -i "s|nguyentienuit/emartapp-frontend:[0-9A-Za-z._-]*|nguyentienuit/emartapp-frontend:${IMAGE_TAG}|g" k8s/base/frontend-deployment.yaml
+
+                        # Cập nhật image cho javaapi
+                        sed -i "s|nguyentienuit/emartapp-javaapi:[0-9A-Za-z._-]*|nguyentienuit/emartapp-javaapi:${IMAGE_TAG}|g" k8s/base/backend-deployment.yaml
+
+                        # Cập nhật image cho nodeapi
+                        sed -i "s|nguyentienuit/emartapp-nodeapi:[0-9A-Za-z._-]*|nguyentienuit/emartapp-nodeapi:${IMAGE_TAG}|g" k8s/base/backend-deployment.yaml
+
+                        # Cập nhật image cho postgres (nếu cần)
+                        # sed -i "s|postgres:[0-9A-Za-z._-]*|postgres:${IMAGE_TAG}|g" k8s/base/database-deployment.yaml
+
+                        # Kiểm tra lại kết quả
+                        catstage k8s/base/frontend-deployment.yaml
+                        cat k8s/base/backend-deployment.yaml
+                        cat k8s/base/database-deployment.yaml
+                    '''
+                }
+            }
+        }
             stage('Verify Deployment') {
                 steps {
                     script {
