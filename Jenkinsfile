@@ -138,7 +138,7 @@
                         - NodeAPI: \$(kubectl get deployment nodeapi -n emartapp -o jsonpath='{.status.availableReplicas}')/\$(kubectl get deployment nodeapi -n emartapp -o jsonpath='{.status.replicas}')
                         - Frontend: \$(kubectl get deployment frontend -n emartapp -o jsonpath='{.status.availableReplicas}')/\$(kubectl get deployment frontend -n emartapp -o jsonpath='{.status.replicas}')
                     """.stripIndent(),
-                    to: '${DEFAULT_RECIPIENTS}'
+                    to: '22521469@gm.uit.edu.vn'
                 )
             }
             failure {
@@ -154,7 +154,7 @@
                         \$(kubectl logs -n emartapp -l app=nodeapi --tail=10)
                         \$(kubectl logs -n emartapp -l app=frontend --tail=10)
                     """.stripIndent(),
-                    to: '${DEFAULT_RECIPIENTS}'
+                    to: '22521469@gm.uit.edu.vn'
                 )
             }
         }
