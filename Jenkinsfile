@@ -49,17 +49,8 @@
                                 # Kiểm tra AWS credentials
                                 aws sts get-caller-identity
 
-                                # Cấu hình AWS CLI profile
-                                mkdir -p ~/.aws
-                                cat > ~/.aws/credentials << EOF
-                                [default]
-                                aws_access_key_id=${AWS_ACCESS_KEY_ID}
-                                aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}
-                                region=${AWS_REGION}
-                                EOF
-
-                                # Cập nhật kubeconfig với profile
-                                aws eks update-kubeconfig --name ${EKS_CLUSTER_NAME} --region ${AWS_REGION} --profile default
+                                # Cập nhật kubeconfig
+                                aws eks update-kubeconfig --name ${EKS_CLUSTER_NAME} --region ${AWS_REGION}
 
                                 # Kiểm tra kết nối cluster
                                 kubectl get nodes
@@ -89,17 +80,8 @@
                             ]
                         ]) {
                             sh """
-                                # Cấu hình AWS CLI profile
-                                mkdir -p ~/.aws
-                                cat > ~/.aws/credentials << EOF
-                                [default]
-                                aws_access_key_id=${AWS_ACCESS_KEY_ID}
-                                aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}
-                                region=${AWS_REGION}
-                                EOF
-
-                                # Cập nhật kubeconfig với profile
-                                aws eks update-kubeconfig --name ${EKS_CLUSTER_NAME} --region ${AWS_REGION} --profile default
+                                # Cập nhật kubeconfig
+                                aws eks update-kubeconfig --name ${EKS_CLUSTER_NAME} --region ${AWS_REGION}
 
                                 # Kiểm tra deployments
                                 kubectl rollout status deployment/javaapi -n emartapp
