@@ -35,34 +35,45 @@ pipeline {
         }
         
         stage('Wait for ArgoCD Sync') {
-    steps {
-        script {
-            withCredentials([
-                [
-                    $class: 'AmazonWebServicesCredentialsBinding',
-                    credentialsId: 'aws-credentials',
-                    accessKeyVariable: 'AWS_ACCESS_KEY_ID',
-                    secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
-                ]
-            ]) {
-                sh """
-                    aws sts get-caller-identity
+            steps {
+                script {
+                    withCredentials([
+                        [
+                            $class: 'AmazonWebServicesCredentialsBinding',
+                            credentialsId: 'aws-credentials',
+                            accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                            secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
+                        ]
+                    ]) {
+                        sh """
+                            # Verify AWS credentials
+                            aws sts get-caller-identity
 
-                    aws eks update-kubeconfig --name ${EKS_CLUSTER_NAME} --region ${AWS_REGION}
+                            # Install aws-iam-authenticator if not present
+                            if ! command -v aws-iam-authenticator &> /dev/null; then
+                                curl -o aws-iam-authenticator https://amazon-eks.s3.us-west-2.amazonaws.com/1.21.2/2021-07-05/bin/linux/amd64/aws-iam-authenticator
+                                chmod +x aws-iam-authenticator
+                                sudo mv aws-iam-authenticator /usr/local/bin/
+                            fi
 
-                    # Wait for ArgoCD application to be healthy
-                    kubectl wait --for=condition=healthy --timeout=300s application/emartapp -n ${ARGOCD_NAMESPACE}
+                            # Update kubeconfig with proper authentication
+                            aws eks update-kubeconfig --name ${EKS_CLUSTER_NAME} --region ${AWS_REGION} --role-arn arn:aws:iam::449663538285:role/eks-admin-role
 
-                    # Wait for all pods to be ready
-                    kubectl wait --for=condition=ready --timeout=300s pod -l app=javaapi -n emartapp
-                    kubectl wait --for=condition=ready --timeout=300s pod -l app=nodeapi -n emartapp
-                    kubectl wait --for=condition=ready --timeout=300s pod -l app=frontend -n emartapp
-                """
+                            # Verify cluster access
+                            kubectl cluster-info
+
+                            # Wait for ArgoCD application to be healthy
+                            kubectl wait --for=condition=healthy --timeout=300s application/emartapp -n ${ARGOCD_NAMESPACE}
+
+                            # Wait for all pods to be ready
+                            kubectl wait --for=condition=ready --timeout=300s pod -l app=javaapi -n emartapp
+                            kubectl wait --for=condition=ready --timeout=300s pod -l app=nodeapi -n emartapp
+                            kubectl wait --for=condition=ready --timeout=300s pod -l app=frontend -n emartapp
+                        """
+                    }
+                }
             }
         }
-    }
-}
-
         
         stage('Verify Deployment') {
             steps {
