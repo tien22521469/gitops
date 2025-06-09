@@ -58,19 +58,19 @@
                             sh """
                                 aws eks update-kubeconfig --name ${EKS_CLUSTER_NAME} --region ${AWS_REGION}
                                 
-                                // # Verify deployments
-                                // kubectl rollout status deployment/javaapi -n emartapp
-                                // kubectl rollout status deployment/nodeapi -n emartapp
-                                // kubectl rollout status deployment/frontend -n emartapp
+                                # Verify deployments
+                                #kubectl rollout status deployment/javaapi -n emartapp
+                                #kubectl rollout status deployment/nodeapi -n emartapp
+                                #kubectl rollout status deployment/frontend -n emartapp
                                 
-                                // # Verify services
-                                // kubectl get svc -n emartapp
+                                # Verify services
+                               # kubectl get svc -n emartapp
                                 
-                                // # Verify network policies
-                                // kubectl get networkpolicy -n emartapp
+                                # Verify network policies
+                               # kubectl get networkpolicy -n emartapp
                                 
-                                // # Verify pod security contexts
-                                // kubectl get pods -n emartapp -o json | jq '.items[].spec.securityContext'
+                                # Verify pod security contexts
+                                #kubectl get pods -n emartapp -o json | jq '.items[].spec.securityContext'
                             """
                         }
                     }
