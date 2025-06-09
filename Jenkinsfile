@@ -55,7 +55,7 @@ pipeline {
             steps {
                 sh '''
                     # Cập nhật image cho frontend
-                    sed -i "s|nguyentienuit/emartapp-frontend\\(:[0-9A-Za-z._-]*\\)*|nguyentienuit/emartapp-frontend:${IMAGE_TAG}|g" k8s/base/frontend-deployment.yaml
+                    sed -i "s|nguyentienuit/emartapp-frontend:[0-9A-Za-z._-]*|nguyentienuit/emartapp-frontend:${IMAGE_TAG}|g" k8s/base/frontend-deployment.yaml
 
                     # Cập nhật image cho javaapi
                     sed -i "s|nguyentienuit/emartapp-javaapi:[0-9A-Za-z._-]*|nguyentienuit/emartapp-javaapi:${IMAGE_TAG}|g" k8s/base/backend-deployment.yaml
