@@ -51,7 +51,7 @@
                 }
             }
             
-            ('Update Deployment Images') {
+            stage('Update Deployment Images') {
                 steps {
                     sh '''
                         # Cập nhật image cho frontend
