@@ -18,7 +18,7 @@ spec:
       containers:
       - name: javaapi
         image: nguyentienuit/emartapp-javaapi:40
-        # command: ["sleep", "infinity"]
+        command: ["sleep", "infinity"]
         ports:
         - containerPort: 8080
         env:
