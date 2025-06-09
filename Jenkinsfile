@@ -12,6 +12,7 @@
             ARGOCD_SERVER = 'devops'
             ARGOCD_NAMESPACE = 'argocd'
             GIT_REPO = 'tien22521469/gitops'
+            EKS_ROLE_ARN = 'arn:aws:iam::449663538285:role/EKSClusterRole'
         }
         
         stages {
@@ -37,44 +38,13 @@
             stage('Wait for ArgoCD Sync') {
                 steps {
                     script {
-                        withCredentials([
-                            [
-                                $class: 'AmazonWebServicesCredentialsBinding',
-                                credentialsId: 'aws-credentials',
-                                accessKeyVariable: 'AWS_ACCESS_KEY_ID',
-                                secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
-                            ]
-                        ]) {
+                        withAWS(credentials: 'aws-credentials', region: env.AWS_REGION) {
                             sh """
-                                # Xóa file credentials nếu tồn tại
-                                rm -f ~/.aws/credentials
+                                # Verify AWS credentials
+                                aws sts get-caller-identity
 
-                                # Kiểm tra AWS credentials
-                                AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} aws sts get-caller-identity
-
-                                # Kiểm tra OIDC provider
-                                OIDC_ID=$(aws eks describe-cluster --name ${EKS_CLUSTER_NAME} --region ${AWS_REGION} --query "cluster.identity.oidc.issuer" --output text | cut -d '/' -f 5)
-                                echo "OIDC Provider ID: $OIDC_ID"
-
-                                # Cập nhật kubeconfig với role của cluster
-                                AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} aws eks update-kubeconfig --name ${EKS_CLUSTER_NAME} --region ${AWS_REGION} --role-arn arn:aws:iam::449663538285:role/eksctl-emart-cluster-cluster-ServiceRole-JX9GkBWmS534
-
-                                # Cấu hình kubectl
-                                export KUBECONFIG=~/.kube/config
-                                export AWS_STS_REGIONAL_ENDPOINTS=regional
-                                export AWS_SDK_LOAD_CONFIG=1
-
-                                # Kiểm tra kết nối cluster
-                                kubectl cluster-info
-                                kubectl get nodes
-
-                                # Kiểm tra trạng thái ArgoCD
-                                kubectl wait --for=condition=healthy --timeout=300s application/emartapp -n ${ARGOCD_NAMESPACE}
-
-                                # Kiểm tra trạng thái các pod
-                                kubectl wait --for=condition=ready --timeout=300s pod -l app=javaapi -n emartapp
-                                kubectl wait --for=condition=ready --timeout=300s pod -l app=nodeapi -n emartapp
-                                kubectl wait --for=condition=ready --timeout=300s pod -l app=frontend -n emartapp
+                                # Update kubeconfig
+                                aws eks update-kubeconfig --name ${EKS_CLUSTER_NAME} --region ${AWS_REGION}
                             """
                         }
                     }
@@ -84,38 +54,22 @@
             stage('Verify Deployment') {
                 steps {
                     script {
-                        withCredentials([
-                            [
-                                $class: 'AmazonWebServicesCredentialsBinding',
-                                credentialsId: 'aws-credentials',
-                                accessKeyVariable: 'AWS_ACCESS_KEY_ID',
-                                secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
-                            ]
-                        ]) {
+                        withAWS(credentials: 'aws-credentials', region: env.AWS_REGION) {
                             sh """
-                                # Xóa file credentials nếu tồn tại
-                                rm -f ~/.aws/credentials
-
-                                # Cập nhật kubeconfig với xác thực IAM
-                                AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} aws eks update-kubeconfig --name ${EKS_CLUSTER_NAME} --region ${AWS_REGION}
-
-                                # Cấu hình kubectl để sử dụng AWS IAM authenticator
-                                export KUBECONFIG=~/.kube/config
-                                export AWS_STS_REGIONAL_ENDPOINTS=regional
-                                export AWS_SDK_LOAD_CONFIG=1
-
-                                # Kiểm tra deployments
+                                aws eks update-kubeconfig --name ${EKS_CLUSTER_NAME} --region ${AWS_REGION}
+                                
+                                # Verify deployments
                                 kubectl rollout status deployment/javaapi -n emartapp
                                 kubectl rollout status deployment/nodeapi -n emartapp
                                 kubectl rollout status deployment/frontend -n emartapp
-
-                                # Kiểm tra services
+                                
+                                # Verify services
                                 kubectl get svc -n emartapp
-
-                                # Kiểm tra network policies
+                                
+                                # Verify network policies
                                 kubectl get networkpolicy -n emartapp
-
-                                # Kiểm tra pod security contexts
+                                
+                                # Verify pod security contexts
                                 kubectl get pods -n emartapp -o json | jq '.items[].spec.securityContext'
                             """
                         }
