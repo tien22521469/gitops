@@ -37,17 +37,24 @@ pipeline {
         stage('Wait for ArgoCD Sync') {
             steps {
                 script {
-                    withCredentials(credentials: 'aws-credentials', region: env.AWS_REGION) {
+                    withAWS(credentials: 'aws-credentials', region: env.AWS_REGION) {
                         sh """
-                            aws eks update-kubeconfig --name ${EKS_CLUSTER_NAME} --region ${AWS_REGION}
+                            # Verify AWS credentials
+                            aws sts get-caller-identity || { echo "AWS credentials are invalid"; exit 1; }
+                            
+                            # Update kubeconfig with proper error handling
+                            aws eks update-kubeconfig --name ${EKS_CLUSTER_NAME} --region ${AWS_REGION} || { echo "Failed to update kubeconfig"; exit 1; }
+                            
+                            # Verify cluster access
+                            kubectl cluster-info || { echo "Failed to access cluster"; exit 1; }
                             
                             # Wait for ArgoCD application to be healthy
-                            kubectl wait --for=condition=healthy --timeout=300s application/emartapp -n ${ARGOCD_NAMESPACE}
+                            kubectl wait --for=condition=healthy --timeout=300s application/emartapp -n ${ARGOCD_NAMESPACE} || { echo "ArgoCD application not healthy"; exit 1; }
                             
                             # Wait for all pods to be ready
-                            kubectl wait --for=condition=ready --timeout=300s pod -l app=javaapi -n emartapp
-                            kubectl wait --for=condition=ready --timeout=300s pod -l app=nodeapi -n emartapp
-                            kubectl wait --for=condition=ready --timeout=300s pod -l app=frontend -n emartapp
+                            kubectl wait --for=condition=ready --timeout=300s pod -l app=javaapi -n emartapp || { echo "JavaAPI pods not ready"; exit 1; }
+                            kubectl wait --for=condition=ready --timeout=300s pod -l app=nodeapi -n emartapp || { echo "NodeAPI pods not ready"; exit 1; }
+                            kubectl wait --for=condition=ready --timeout=300s pod -l app=frontend -n emartapp || { echo "Frontend pods not ready"; exit 1; }
                         """
                     }
                 }
