@@ -8,10 +8,10 @@ pipeline {
     
     environment {
         AWS_REGION = 'us-east-1'
-        EKS_CLUSTER_NAME = 'emartapp-cluster'
-        ARGOCD_SERVER = 'argocd-server'
+        EKS_CLUSTER_NAME = 'emart-cluster'
+        ARGOCD_SERVER = 'devops'
         ARGOCD_NAMESPACE = 'argocd'
-        GIT_REPO = 'tien22521469/devops-gitops'
+        GIT_REPO = 'tien22521469/gitops'
     }
     
     stages {
