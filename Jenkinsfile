@@ -35,24 +35,34 @@ pipeline {
         }
         
         stage('Wait for ArgoCD Sync') {
-            steps {
-                script {
-                    withCredentials(credentials: 'aws-credentials', region: env.AWS_REGION) {
-                        sh """
-                            aws eks update-kubeconfig --name ${EKS_CLUSTER_NAME} --region ${AWS_REGION}
-                            
-                            # Wait for ArgoCD application to be healthy
-                            kubectl wait --for=condition=healthy --timeout=300s application/emartapp -n ${ARGOCD_NAMESPACE}
-                            
-                            # Wait for all pods to be ready
-                            kubectl wait --for=condition=ready --timeout=300s pod -l app=javaapi -n emartapp
-                            kubectl wait --for=condition=ready --timeout=300s pod -l app=nodeapi -n emartapp
-                            kubectl wait --for=condition=ready --timeout=300s pod -l app=frontend -n emartapp
-                        """
-                    }
-                }
+    steps {
+        script {
+            withCredentials([
+                [
+                    $class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: 'aws-credentials',
+                    accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                    secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
+                ]
+            ]) {
+                sh """
+                    aws sts get-caller-identity
+
+                    aws eks update-kubeconfig --name ${EKS_CLUSTER_NAME} --region ${AWS_REGION}
+
+                    # Wait for ArgoCD application to be healthy
+                    kubectl wait --for=condition=healthy --timeout=300s application/emartapp -n ${ARGOCD_NAMESPACE}
+
+                    # Wait for all pods to be ready
+                    kubectl wait --for=condition=ready --timeout=300s pod -l app=javaapi -n emartapp
+                    kubectl wait --for=condition=ready --timeout=300s pod -l app=nodeapi -n emartapp
+                    kubectl wait --for=condition=ready --timeout=300s pod -l app=frontend -n emartapp
+                """
             }
         }
+    }
+}
+
         
         stage('Verify Deployment') {
             steps {
