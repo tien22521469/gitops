@@ -52,15 +52,20 @@
                                 # Kiểm tra AWS credentials
                                 AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} aws sts get-caller-identity
 
-                                # Cập nhật kubeconfig với xác thực IAM
-                                AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} aws eks update-kubeconfig --name ${EKS_CLUSTER_NAME} --region ${AWS_REGION}
+                                # Kiểm tra OIDC provider
+                                OIDC_ID=$(aws eks describe-cluster --name ${EKS_CLUSTER_NAME} --region ${AWS_REGION} --query "cluster.identity.oidc.issuer" --output text | cut -d '/' -f 5)
+                                echo "OIDC Provider ID: $OIDC_ID"
 
-                                # Cấu hình kubectl để sử dụng AWS IAM authenticator
+                                # Cập nhật kubeconfig với role của cluster
+                                AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} aws eks update-kubeconfig --name ${EKS_CLUSTER_NAME} --region ${AWS_REGION} --role-arn arn:aws:iam::449663538285:role/eksctl-emart-cluster-cluster-ServiceRole-JX9GkBWmS534
+
+                                # Cấu hình kubectl
                                 export KUBECONFIG=~/.kube/config
                                 export AWS_STS_REGIONAL_ENDPOINTS=regional
                                 export AWS_SDK_LOAD_CONFIG=1
 
                                 # Kiểm tra kết nối cluster
+                                kubectl cluster-info
                                 kubectl get nodes
 
                                 # Kiểm tra trạng thái ArgoCD
